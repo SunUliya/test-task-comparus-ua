@@ -1,0 +1,7 @@
+input[type='number'] {
+    width: 230px;
+    border: 1px solid bisque;;
+    height: 38px;
+    border-radius: 10px;
+    padding: 10px;
+}
