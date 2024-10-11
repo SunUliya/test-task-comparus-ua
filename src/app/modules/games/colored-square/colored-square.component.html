@@ -1,0 +1,24 @@
+<form class="colored-square-form" [formGroup]="form" (submit)='startGame()' autocomplete='off'>
+    <input type="number" formControlName='delay' placeholder="Введіть час затримки у мілісекундах" min="0">
+    <button type='submit' [disabled]='form.invalid'>Почати</button>
+</form>
+
+<app-score-panel [score]="score"/>
+
+<div class="colored-square-wrapper">
+    @for(square of squares; track $index) {
+        <app-small-square
+            [ngClass]="{'cursor-pointer': $index === randomNumber}"
+            [paint]="square"
+            (click)="selectSquare($index)"
+        />
+    }
+</div>
+
+@if(isPopupShown) {
+    <app-popup (closedPopup)="closePopup()">
+        <app-score-panel [score]="score" />
+    </app-popup>
+}
+
+

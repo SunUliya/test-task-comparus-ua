@@ -1,0 +1,6 @@
+<div class="modal-content" [@popupAnimation]>
+    <div class="modal-content-wrapper">
+        <ng-content/>
+    </div>
+    <button (click)="closedPopup.emit(true)">Закрити</button>
+</div>
