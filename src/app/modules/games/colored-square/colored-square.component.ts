@@ -1,4 +1,4 @@
-import { Component, DestroyRef, inject } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, DestroyRef, inject } from '@angular/core';
 import { SmallSquareComponent } from '../../../shared/components/square/small-square.component';
 import { PaintDirective } from '../../../shared/directives/paint.directive';
 import { getArrayWithTwinValues, getUniqRandomNumber } from '../../../common/helpers';
@@ -15,7 +15,8 @@ import { ScorePanelComponent } from './components/score-panel/score-panel.compon
   standalone: true,
   imports: [ReactiveFormsModule, SmallSquareComponent, PaintDirective, PopupComponent, CommonModule, ScorePanelComponent],
   templateUrl: './colored-square.component.html',
-  styleUrl: './colored-square.component.css'
+  styleUrl: './colored-square.component.css',
+  changeDetection: ChangeDetectionStrategy.OnPush 
 })
 export class ColoredSquareComponent {
 
@@ -36,7 +37,10 @@ export class ColoredSquareComponent {
     return this.form.value.delay
   }
 
-  constructor(private readonly fb: UntypedFormBuilder){
+  constructor(
+    private readonly fb: UntypedFormBuilder,
+    private readonly cdRef: ChangeDetectorRef
+  ){
     this.form = this.fb.group({
       delay: ['', Validators.required]
     });
@@ -54,6 +58,7 @@ export class ColoredSquareComponent {
         this.score.loss++
         this.resetRandomNumber();
         this.nextStep();
+        this.cdRef.markForCheck();
     }); 
   }
 

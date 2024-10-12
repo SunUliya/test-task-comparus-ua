@@ -1,6 +1,6 @@
 <form class="colored-square-form" [formGroup]="form" (submit)='startGame()' autocomplete='off'>
     <input type="number" formControlName='delay' placeholder="Введіть час затримки у мілісекундах" min="0">
-    <button type='submit' [disabled]='form.invalid'>Почати</button>
+    <button type='submit' [disabled]='form.invalid || form.disabled'>Почати</button>
 </form>
 
 <app-score-panel [score]="score"/>
