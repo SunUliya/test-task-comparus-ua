@@ -1,5 +1,5 @@
 import { trigger, state, style, transition, animate } from '@angular/animations';
-import { Component, EventEmitter, Output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, Output } from '@angular/core';
 
 @Component({
   selector: 'app-popup',
@@ -24,7 +24,8 @@ import { Component, EventEmitter, Output } from '@angular/core';
         animate('300ms ease-in')
       ])
     ])
-  ]
+  ],
+  changeDetection: ChangeDetectionStrategy.OnPush 
 })
 export class PopupComponent {
   @Output() closedPopup = new EventEmitter<true>();
