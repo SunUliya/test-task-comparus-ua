@@ -55,7 +55,7 @@ export class ColoredSquareComponent {
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe(() => {
         if(this.randomNumber !== null) this.squares[this.randomNumber] = Colors.Failed;
-        this.score.loss++
+        this.score = {win: this.score.win, loss: ++this.score.loss};
         this.resetRandomNumber();
         this.nextStep();
         this.cdRef.markForCheck();
@@ -66,7 +66,7 @@ export class ColoredSquareComponent {
     if(index === this.randomNumber) {
       this.squares[this.randomNumber] = Colors.Success;
       this.timerSubscription.unsubscribe();
-      this.score.win++
+      this.score = {win: ++this.score.win, loss: this.score.loss};
       this.resetRandomNumber();
       this.nextStep();
     }
