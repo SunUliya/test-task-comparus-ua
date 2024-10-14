@@ -3,7 +3,7 @@
     <button type='submit' [disabled]='form.invalid || form.disabled'>Почати</button>
 </form>
 
-<app-score-panel [score]="score"/>
+<app-score-panel [score]="score()"/>
 
 <div class="colored-square-wrapper">
     @for(square of squares; track $index) {
@@ -17,7 +17,7 @@
 
 @if(isPopupShown) {
     <app-popup (closedPopup)="closePopup()">
-        <app-score-panel [score]="score" />
+        <app-score-panel [score]="score()" />
     </app-popup>
 }
 

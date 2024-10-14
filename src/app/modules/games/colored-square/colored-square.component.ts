@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, DestroyRef, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, inject, signal, WritableSignal } from '@angular/core';
 import { SmallSquareComponent } from '../../../shared/components/square/small-square.component';
 import { PaintDirective } from '../../../shared/directives/paint.directive';
 import { getArrayWithTwinValues, getUniqRandomNumber } from '../../../common/helpers';
@@ -9,6 +9,7 @@ import { Colors, MAX_SCORE, SQUARES_AMOUNT } from './constants';
 import { PopupComponent } from '../../../shared/components/popup/popup.component';
 import { CommonModule } from '@angular/common';
 import { ScorePanelComponent } from './components/score-panel/score-panel.component';
+import { IScore } from '../../../common/interfaces';
 
 @Component({
   selector: 'app-colored-square',
@@ -22,7 +23,8 @@ export class ColoredSquareComponent {
 
   form: UntypedFormGroup;
   squares = getArrayWithTwinValues(Colors.Default, SQUARES_AMOUNT);
-  score = {win: 0, loss: 0}
+  initialScore: IScore  = {win: 0, loss: 0};
+  score: WritableSignal<IScore> = signal(this.initialScore)
   isPopupShown = false;
   randomNumber: number | null = null;
   private destroyRef = inject(DestroyRef);
@@ -30,7 +32,7 @@ export class ColoredSquareComponent {
   private timerSubscription = Subscription.EMPTY;
 
   get isGameOver(): boolean {    
-    return this.score.loss >= MAX_SCORE || this.score.win >= MAX_SCORE;
+    return this.score().loss >= MAX_SCORE || this.score().win >= MAX_SCORE;
   }
 
   get delay() {
@@ -38,8 +40,7 @@ export class ColoredSquareComponent {
   }
 
   constructor(
-    private readonly fb: UntypedFormBuilder,
-    private readonly cdRef: ChangeDetectorRef
+    private readonly fb: UntypedFormBuilder
   ){
     this.form = this.fb.group({
       delay: ['', Validators.required]
@@ -55,10 +56,9 @@ export class ColoredSquareComponent {
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe(() => {
         if(this.randomNumber !== null) this.squares[this.randomNumber] = Colors.Failed;
-        this.score = {win: this.score.win, loss: ++this.score.loss};
+        this.score.update(v => ({...v, loss: v.loss + 1}))
         this.resetRandomNumber();
         this.nextStep();
-        this.cdRef.markForCheck();
     }); 
   }
 
@@ -66,7 +66,7 @@ export class ColoredSquareComponent {
     if(index === this.randomNumber) {
       this.squares[this.randomNumber] = Colors.Success;
       this.timerSubscription.unsubscribe();
-      this.score = {win: ++this.score.win, loss: this.score.loss};
+      this.score.update(v => ({...v, win: v.win + 1}))
       this.resetRandomNumber();
       this.nextStep();
     }
@@ -74,7 +74,7 @@ export class ColoredSquareComponent {
 
   closePopup(): void {
     this.isPopupShown = false;
-    this.score = {win: 0, loss: 0};
+    this.score.update(() => this.initialScore);
     this.randomNumber = 0;
     this.squares = getArrayWithTwinValues(Colors.Default, SQUARES_AMOUNT);
     this.form.reset();
