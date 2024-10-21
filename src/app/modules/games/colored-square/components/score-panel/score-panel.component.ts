@@ -1,4 +1,5 @@
-import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, input} from '@angular/core';
+import { IScore } from '../../../../../common/interfaces';
 
 @Component({
   selector: 'app-score-panel',
@@ -9,5 +10,5 @@ import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
   changeDetection: ChangeDetectionStrategy.OnPush 
 })
 export class ScorePanelComponent {
-  @Input() score?: {win: number, loss: number}
+  score = input<IScore>();
 }
